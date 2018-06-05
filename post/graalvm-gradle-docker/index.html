@@ -296,7 +296,7 @@ Then, update <code>src/main/java/App.java</code> to serve a greeting over HTTP i
 <p>Now comes my only hack in this post. GraalVM won&rsquo;t like that we don&rsquo;t have any
 resources later on, so create an empty file called <code>dummy.txt</code> in
 <code>src/main/resources</code>. In a more substantial project, you&rsquo;d likely have some
-resources anyways and wouldn&rsquo;t need this file.</p>
+resources anyway and wouldn&rsquo;t need this file.</p>
 
 <p>If you run <code>./gradlew run</code> now, you&rsquo;ve got a web server. Awesome! Time to make
 a native image out of it.</p>
