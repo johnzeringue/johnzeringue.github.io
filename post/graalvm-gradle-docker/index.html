@@ -5,8 +5,8 @@
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>GraalVM &#43; Gradle &#43; Docker = Production Ready??? | John Zeringue</title>
-    <meta name="description" content="GraalVM is a new virtual machine from Oracle that supports several popular programming languages including JavaScript, Python, Ruby, and Java. One exciting feature of GraalVM is the ability to create native images from JVM binaries. These native images promise improved size, speed, startup time, and operational overhead.
-Renato Athaydes first got me interested in GraalVM with his blog post on native images. I wanted to explore how you&rsquo;d write a more typical web application using native images, starting a new codebase from scratch.">
+    <meta name="description" content="GraalVM is a new virtual machine from Oracle that supports several popular programming languages including JavaScript, Python, Ruby, and Java. One exciting feature of GraalVM is the ability to create native images from JVM binaries. These native images promise improved size, speed, startup time, and operational overhead compared to full JVMs.
+Renato Athaydes first got me interested in GraalVM with his blog post on native images. I wanted to explore how you&rsquo;d write a typical web application using native images, starting a new codebase from scratch.">
     <meta name="keywords" content="">
     
     
@@ -18,8 +18,8 @@ Renato Athaydes first got me interested in GraalVM with his blog post on native 
 
 
     <meta property="og:title" content="GraalVM &#43; Gradle &#43; Docker = Production Ready???" />
-<meta property="og:description" content="GraalVM is a new virtual machine from Oracle that supports several popular programming languages including JavaScript, Python, Ruby, and Java. One exciting feature of GraalVM is the ability to create native images from JVM binaries. These native images promise improved size, speed, startup time, and operational overhead.
-Renato Athaydes first got me interested in GraalVM with his blog post on native images. I wanted to explore how you&rsquo;d write a more typical web application using native images, starting a new codebase from scratch." />
+<meta property="og:description" content="GraalVM is a new virtual machine from Oracle that supports several popular programming languages including JavaScript, Python, Ruby, and Java. One exciting feature of GraalVM is the ability to create native images from JVM binaries. These native images promise improved size, speed, startup time, and operational overhead compared to full JVMs.
+Renato Athaydes first got me interested in GraalVM with his blog post on native images. I wanted to explore how you&rsquo;d write a typical web application using native images, starting a new codebase from scratch." />
 <meta property="og:type" content="article" />
 <meta property="og:url" content="https://zeringue.io/post/graalvm-gradle-docker/" />
 
@@ -41,8 +41,8 @@ Renato Athaydes first got me interested in GraalVM with his blog post on native 
 
     <meta name="twitter:card" content="summary"/>
 <meta name="twitter:title" content="GraalVM &#43; Gradle &#43; Docker = Production Ready???"/>
-<meta name="twitter:description" content="GraalVM is a new virtual machine from Oracle that supports several popular programming languages including JavaScript, Python, Ruby, and Java. One exciting feature of GraalVM is the ability to create native images from JVM binaries. These native images promise improved size, speed, startup time, and operational overhead.
-Renato Athaydes first got me interested in GraalVM with his blog post on native images. I wanted to explore how you&rsquo;d write a more typical web application using native images, starting a new codebase from scratch."/>
+<meta name="twitter:description" content="GraalVM is a new virtual machine from Oracle that supports several popular programming languages including JavaScript, Python, Ruby, and Java. One exciting feature of GraalVM is the ability to create native images from JVM binaries. These native images promise improved size, speed, startup time, and operational overhead compared to full JVMs.
+Renato Athaydes first got me interested in GraalVM with his blog post on native images. I wanted to explore how you&rsquo;d write a typical web application using native images, starting a new codebase from scratch."/>
 
     
 
@@ -219,13 +219,13 @@ article header img {
   <article itemscope itemtype="http://schema.org/BlogPosting">
     
 <meta itemprop="name" content="GraalVM &#43; Gradle &#43; Docker = Production Ready???">
-<meta itemprop="description" content="GraalVM is a new virtual machine from Oracle that supports several popular programming languages including JavaScript, Python, Ruby, and Java. One exciting feature of GraalVM is the ability to create native images from JVM binaries. These native images promise improved size, speed, startup time, and operational overhead.
-Renato Athaydes first got me interested in GraalVM with his blog post on native images. I wanted to explore how you&rsquo;d write a more typical web application using native images, starting a new codebase from scratch.">
+<meta itemprop="description" content="GraalVM is a new virtual machine from Oracle that supports several popular programming languages including JavaScript, Python, Ruby, and Java. One exciting feature of GraalVM is the ability to create native images from JVM binaries. These native images promise improved size, speed, startup time, and operational overhead compared to full JVMs.
+Renato Athaydes first got me interested in GraalVM with his blog post on native images. I wanted to explore how you&rsquo;d write a typical web application using native images, starting a new codebase from scratch.">
 
 
 <meta itemprop="datePublished" content="2018-06-04T20:11:50-04:00" />
 <meta itemprop="dateModified" content="2018-06-04T20:11:50-04:00" />
-<meta itemprop="wordCount" content="939">
+<meta itemprop="wordCount" content="938">
 
 
 
@@ -259,23 +259,22 @@ Renato Athaydes first got me interested in GraalVM with his blog post on native 
 programming languages including JavaScript, Python, Ruby, and Java. One exciting
 feature of GraalVM is the ability to create native images from JVM binaries.
 These native images promise improved size, speed, startup time, and operational
-overhead.</p>
+overhead compared to full JVMs.</p>
 
 <p>Renato Athaydes first got me interested in GraalVM with
 <a href="https://sites.google.com/a/athaydes.com/renato-athaydes/posts/a7mbnative-imagejavaappthatrunsin30msandusesonly4mbofram" target="_blank">his blog post on native images</a>.
-I wanted to explore how you&rsquo;d write a more typical web application using native images,
+I wanted to explore how you&rsquo;d write a typical web application using native images,
 starting a new codebase from scratch.</p>
 
-<p>In this blog post, I explore how to create a native image for a basic web server
+<p>In this blog post, I show how to create a native image for a basic web server
 written using <a href="http://sparkjava.com/" target="_blank">Spark</a>, a popular Java microframework. At the end, we&rsquo;ll
-have a nicely scripted build that you <em>might</em> consider for serious projects.</p>
+have a nicely scripted build that you <em>might</em> consider using for serious projects.</p>
 
-<p>I&rsquo;ve chosen Gradle for this project because it&rsquo;s both flexible and my Java build
-tool of choice. After installing Gradle on your own, create a new directory,
-navigate to it from the command line, and run
-<code>gradle init --type java-application</code>, which will generate a project skeleton
-suitable for this example. Now you should be able to run <code>./gradlew run</code> and get
-a nice greeting back.</p>
+<p>I&rsquo;ve chosen Gradle for this project because it&rsquo;s both flexible and my preference.
+After installing Gradle on your own, create a new directory, navigate to it from
+the command line, and run <code>gradle init --type java-application</code>, which will
+generate a project skeleton suitable for this example. Now you should be able to
+run <code>./gradlew run</code> and get a nice greeting back.</p>
 
 <p>Next we&rsquo;ll flesh out the web application. First, we&rsquo;ll need to add Spark to our
 project dependencies. Edit the dependencies block in your <code>build.gradle</code> file to look
@@ -302,9 +301,9 @@ resources anyway and wouldn&rsquo;t need this file.</p>
 a native image out of it.</p>
 
 <p>One cool implementation detail of the GraalVM <code>native-image</code> binary is that it
-shares a similar interface to the trusty old <code>java</code> command. We&rsquo;ll take
+has a similar interface to the trusty old <code>java</code> command. We&rsquo;ll take
 advantage of this by using Gradle&rsquo;s <code>JavaExec</code> task type to configure tricky
-stuff like classpath without too much effort. Add the following to your
+stuff like the classpath without too much effort. Add the following to your
 <code>build.gradle</code>:
     <div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-java" data-lang="java">task <span style="color:#a6e22e">nativeImage</span><span style="color:#f92672">(</span>type: JavaExec<span style="color:#f92672">)</span> <span style="color:#f92672">{</span>
     classpath <span style="color:#f92672">=</span> sourceSets<span style="color:#f92672">.</span><span style="color:#a6e22e">main</span><span style="color:#f92672">.</span><span style="color:#a6e22e">runtimeClasspath</span>
@@ -316,9 +315,9 @@ This adds a new task that invokes the <code>native-image</code> binary using the
 classpath and main class that we&rsquo;ve been using with <code>./gradlew run</code>.</p>
 
 <p>It&rsquo;s straightforward enough except for the JVM argument at the end. This is
-because GraalVM native images don&rsquo;t yet support Java SSL, which Spark includes.
+because GraalVM native images don&rsquo;t yet support Java SSL, which Spark uses.
 We won&rsquo;t be using Spark&rsquo;s HTTPS functionality, so it&rsquo;s okay to push these
-errors to runtime. This flag makes me somewhat uncomfortable about using this
+errors to runtime. This flag makes me somewhat uncomfortable using this
 build script in production, since we&rsquo;re keeping GraalVM from catching any <em>real</em>
 mistakes you might make.</p>
 
@@ -353,12 +352,12 @@ Dockerfile
 build</code></pre></div>
 
 <p>Again, not too many tricks. The first block in the Dockerfile builds the native
-image using the Gradle task we set up earlier, and then the second block copies
+image using the Gradle task we set up earlier, and the second block copies
 it into a clean Docker image without the build tools. It&rsquo;s not especially fast,
 so get comfortable and run <code>docker build -t graalvm-demo .</code></p>
 
 <p>Once it finishes, we&rsquo;re all done! On my machine, the native image weighed in at
-16 MB and the whole Docker image is 95 MB uncompressed. By comparison, just the
+16 MB and the whole Docker image is just 95 MB uncompressed. By comparison, the
 <code>openjdk</code> image is currently 625 MB <em>without any</em> application code.</p>
 
 <p>Run <code>docker run -p 4567:4567 graalvm-demo</code> to start the server, which runs without a
@@ -376,22 +375,22 @@ However, I&rsquo;m confident that support and tooling will improve, and
 eventually we&rsquo;ll even be able to use reflection-intensive web frameworks like
 Jersey and Spring.</p>
 
-<p>Native images could be a big feature for Java, putting it directly in
+<p>Native images could be a big feature for Java, putting it in
 competition with Golang. Java has been so successful on the server that it&rsquo;s
 exciting to imagine the possibilities for CLIs and smaller distributions.</p>
 
 <h2 id="next-steps">Next Steps</h2>
 
-<p>There are a couple of easy improvements to my approach if you really do want
+<p>There are a couple of easy improvements to my approach if you do want
 to start using GraalVM native images right now.</p>
 
-<p>First is to package the GraalVM distribution in a base Docker image so that you
+<p>The first is to package the GraalVM distribution in a base Docker image so that you
 don&rsquo;t have the 200 MB tarball in every project you start. You could also try
 and get it to work with Alpine Linux instead of Ubuntu to shave another 50 MB
-off the final Docker image size.</p>
+off of the final Docker image size.</p>
 
-<p>Next is to package the Gradle code into an easy-to-use plugin. Most of what I
-wrote above could be automatically added for the user without any configuration.
+<p>Next is to rework the Gradle code into an easy-to-use plugin. Most of what I
+have above can be automatically added for the user without any configuration.
 <code>native-image</code> also has other flags that let you choose the name and location of the
 output binary.</p>
 
@@ -411,7 +410,7 @@ output binary.</p>
   </time>
   
   
-  using <span itemprop="wordCount">939</span> words.
+  using <span itemprop="wordCount">938</span> words.
 </p>
 
       
