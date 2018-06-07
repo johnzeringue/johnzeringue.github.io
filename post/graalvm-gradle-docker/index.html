@@ -4,9 +4,9 @@
     <meta name="generator" content="Hugo 0.40.3" />
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>GraalVM &#43; Gradle &#43; Docker = Production Ready??? | John Zeringue</title>
-    <meta name="description" content="GraalVM is a new virtual machine from Oracle that supports several popular programming languages including JavaScript, Python, Ruby, and Java. One exciting feature of GraalVM is the ability to create native images from JVM binaries. These native images promise improved size, speed, startup time, and operational overhead compared to full JVMs.
-Renato Athaydes first got me interested in GraalVM with his blog post on native images. I wanted to explore how you&rsquo;d write a typical web application using native images, starting a new codebase from scratch.">
+    <title>Small Static Java Web Servers with GraalVM and Gradle | John Zeringue</title>
+    <meta name="description" content="GraalVM is a new virtual machine from Oracle that supports several popular programming languages including JavaScript, Python, Ruby, and Java. One exciting feature of GraalVM is the ability to create native binaries from JVM binaries. These native binaries promise improved size, speed, startup time, and operational overhead compared to the typical Java runtime.
+In this blog post, I show how to create a native binary for a basic web server written using Spark, a popular Java microframework.">
     <meta name="keywords" content="">
     
     
@@ -17,9 +17,9 @@ Renato Athaydes first got me interested in GraalVM with his blog post on native 
   <meta name="author" content="">
 
 
-    <meta property="og:title" content="GraalVM &#43; Gradle &#43; Docker = Production Ready???" />
-<meta property="og:description" content="GraalVM is a new virtual machine from Oracle that supports several popular programming languages including JavaScript, Python, Ruby, and Java. One exciting feature of GraalVM is the ability to create native images from JVM binaries. These native images promise improved size, speed, startup time, and operational overhead compared to full JVMs.
-Renato Athaydes first got me interested in GraalVM with his blog post on native images. I wanted to explore how you&rsquo;d write a typical web application using native images, starting a new codebase from scratch." />
+    <meta property="og:title" content="Small Static Java Web Servers with GraalVM and Gradle" />
+<meta property="og:description" content="GraalVM is a new virtual machine from Oracle that supports several popular programming languages including JavaScript, Python, Ruby, and Java. One exciting feature of GraalVM is the ability to create native binaries from JVM binaries. These native binaries promise improved size, speed, startup time, and operational overhead compared to the typical Java runtime.
+In this blog post, I show how to create a native binary for a basic web server written using Spark, a popular Java microframework." />
 <meta property="og:type" content="article" />
 <meta property="og:url" content="https://zeringue.io/post/graalvm-gradle-docker/" />
 
@@ -40,9 +40,9 @@ Renato Athaydes first got me interested in GraalVM with his blog post on native 
 
 
     <meta name="twitter:card" content="summary"/>
-<meta name="twitter:title" content="GraalVM &#43; Gradle &#43; Docker = Production Ready???"/>
-<meta name="twitter:description" content="GraalVM is a new virtual machine from Oracle that supports several popular programming languages including JavaScript, Python, Ruby, and Java. One exciting feature of GraalVM is the ability to create native images from JVM binaries. These native images promise improved size, speed, startup time, and operational overhead compared to full JVMs.
-Renato Athaydes first got me interested in GraalVM with his blog post on native images. I wanted to explore how you&rsquo;d write a typical web application using native images, starting a new codebase from scratch."/>
+<meta name="twitter:title" content="Small Static Java Web Servers with GraalVM and Gradle"/>
+<meta name="twitter:description" content="GraalVM is a new virtual machine from Oracle that supports several popular programming languages including JavaScript, Python, Ruby, and Java. One exciting feature of GraalVM is the ability to create native binaries from JVM binaries. These native binaries promise improved size, speed, startup time, and operational overhead compared to the typical Java runtime.
+In this blog post, I show how to create a native binary for a basic web server written using Spark, a popular Java microframework."/>
 
     
 
@@ -218,27 +218,27 @@ article header img {
     <main>
   <article itemscope itemtype="http://schema.org/BlogPosting">
     
-<meta itemprop="name" content="GraalVM &#43; Gradle &#43; Docker = Production Ready???">
-<meta itemprop="description" content="GraalVM is a new virtual machine from Oracle that supports several popular programming languages including JavaScript, Python, Ruby, and Java. One exciting feature of GraalVM is the ability to create native images from JVM binaries. These native images promise improved size, speed, startup time, and operational overhead compared to full JVMs.
-Renato Athaydes first got me interested in GraalVM with his blog post on native images. I wanted to explore how you&rsquo;d write a typical web application using native images, starting a new codebase from scratch.">
+<meta itemprop="name" content="Small Static Java Web Servers with GraalVM and Gradle">
+<meta itemprop="description" content="GraalVM is a new virtual machine from Oracle that supports several popular programming languages including JavaScript, Python, Ruby, and Java. One exciting feature of GraalVM is the ability to create native binaries from JVM binaries. These native binaries promise improved size, speed, startup time, and operational overhead compared to the typical Java runtime.
+In this blog post, I show how to create a native binary for a basic web server written using Spark, a popular Java microframework.">
 
 
 <meta itemprop="datePublished" content="2018-06-04T20:11:50-04:00" />
 <meta itemprop="dateModified" content="2018-06-04T20:11:50-04:00" />
-<meta itemprop="wordCount" content="938">
+<meta itemprop="wordCount" content="731">
 
 
 
 <meta itemprop="keywords" content="" />
 
     <header>
-      <h1 itemprop="headline">GraalVM &#43; Gradle &#43; Docker = Production Ready???</h1>
+      <h1 itemprop="headline">Small Static Java Web Servers with GraalVM and Gradle</h1>
       <p class="muted">
         <svg style="margin-bottom:-3px" class="i-clock" viewBox="0 0 32 32" width="16" height="16" fill="none" stroke="currentcolor" stroke-linecap="round" stroke-linejoin="round" stroke-width="6.25%">
   <circle cx="16" cy="16" r="14" />
   <path d="M16 8 L16 16 20 20" />
 </svg>
-<span>5 minute read</span>
+<span>4 minute read</span>
 <svg style="margin-bottom: -3px" class="i-edit" viewBox="0 0 32 32" width="16" height="16" fill="none" stroke="currentcolor" stroke-linecap="round" stroke-linejoin="round" stroke-width="6.25%">
   <path d="M30 7 L25 2 5 22 3 29 10 27 Z M21 6 L26 11 Z M5 22 L10 27 Z" />
 </svg>
@@ -257,21 +257,15 @@ Renato Athaydes first got me interested in GraalVM with his blog post on native 
 
 <p><a href="https://www.graalvm.org/" target="_blank">GraalVM</a> is a new virtual machine from Oracle that supports several popular
 programming languages including JavaScript, Python, Ruby, and Java. One exciting
-feature of GraalVM is the ability to create native images from JVM binaries.
-These native images promise improved size, speed, startup time, and operational
-overhead compared to full JVMs.</p>
+feature of GraalVM is the ability to create native binaries from JVM binaries.
+These native binaries promise improved size, speed, startup time, and operational
+overhead compared to the typical Java runtime.</p>
 
-<p>Renato Athaydes first got me interested in GraalVM with
-<a href="https://sites.google.com/a/athaydes.com/renato-athaydes/posts/a7mbnative-imagejavaappthatrunsin30msandusesonly4mbofram" target="_blank">his blog post on native images</a>.
-I wanted to explore how you&rsquo;d write a typical web application using native images,
-starting a new codebase from scratch.</p>
-
-<p>In this blog post, I show how to create a native image for a basic web server
+<p>In this blog post, I show how to create a native binary for a basic web server
 written using <a href="http://sparkjava.com/" target="_blank">Spark</a>, a popular Java microframework. At the end, we&rsquo;ll
 have a nicely scripted build that you <em>might</em> consider using for serious projects.</p>
 
-<p>I&rsquo;ve chosen Gradle for this project because it&rsquo;s both flexible and my preference.
-After installing Gradle on your own, create a new directory, navigate to it from
+<p>After installing Gradle on your own, create a new directory, navigate to it from
 the command line, and run <code>gradle init --type java-application</code>, which will
 generate a project skeleton suitable for this example. Now you should be able to
 run <code>./gradlew run</code> and get a nice greeting back.</p>
@@ -292,13 +286,15 @@ Then, update <code>src/main/java/App.java</code> to serve a greeting over HTTP i
     <span style="color:#f92672">}</span>
 <span style="color:#f92672">}</span></code></pre></div></p>
 
-<p>Now comes my only hack in this post. GraalVM won&rsquo;t like that we don&rsquo;t have any
-resources later on, so create an empty file called <code>dummy.txt</code> in
-<code>src/main/resources</code>. In a more substantial project, you&rsquo;d likely have some
-resources anyway and wouldn&rsquo;t need this file.</p>
+<p>Now comes a quick hack. GraalVM won&rsquo;t like that we don&rsquo;t have any
+resources later on
+(<a href="https://github.com/oracle/graal/issues/456" target="_blank">something I&rsquo;d like to change</a>),
+so create an empty file called <code>dummy.txt</code> in <code>src/main/resources</code>. In a more
+substantial project, you&rsquo;d likely have some resources anyway and wouldn&rsquo;t need
+this file.</p>
 
 <p>If you run <code>./gradlew run</code> now, you&rsquo;ve got a web server. Awesome! Time to make
-a native image out of it.</p>
+it native.</p>
 
 <p>One cool implementation detail of the GraalVM <code>native-image</code> binary is that it
 has a similar interface to the trusty old <code>java</code> command. We&rsquo;ll take
@@ -309,31 +305,30 @@ stuff like the classpath without too much effort. Add the following to your
     classpath <span style="color:#f92672">=</span> sourceSets<span style="color:#f92672">.</span><span style="color:#a6e22e">main</span><span style="color:#f92672">.</span><span style="color:#a6e22e">runtimeClasspath</span>
     main <span style="color:#f92672">=</span> project<span style="color:#f92672">.</span><span style="color:#a6e22e">mainClassName</span>
     executable <span style="color:#f92672">=</span> <span style="color:#960050;background-color:#1e0010">&#39;</span><span style="color:#66d9ef">native</span><span style="color:#f92672">-</span>image<span style="color:#960050;background-color:#1e0010">&#39;</span>
-    jvmArgs <span style="color:#960050;background-color:#1e0010">&#39;</span><span style="color:#f92672">-</span>H:<span style="color:#f92672">+</span>ReportUnsupportedElementsAtRuntime<span style="color:#960050;background-color:#1e0010">&#39;</span>
+    jvmArgs <span style="color:#960050;background-color:#1e0010">&#39;</span><span style="color:#f92672">--</span><span style="color:#66d9ef">static</span><span style="color:#960050;background-color:#1e0010">&#39;</span><span style="color:#f92672">,</span> <span style="color:#960050;background-color:#1e0010">&#39;</span><span style="color:#f92672">-</span>H:<span style="color:#f92672">+</span>ReportUnsupportedElementsAtRuntime<span style="color:#960050;background-color:#1e0010">&#39;</span>
 <span style="color:#f92672">}</span></code></pre></div>
 This adds a new task that invokes the <code>native-image</code> binary using the same
 classpath and main class that we&rsquo;ve been using with <code>./gradlew run</code>.</p>
 
-<p>It&rsquo;s straightforward enough except for the JVM argument at the end. This is
-because GraalVM native images don&rsquo;t yet support Java SSL, which Spark uses.
-We won&rsquo;t be using Spark&rsquo;s HTTPS functionality, so it&rsquo;s okay to push these
-errors to runtime. This flag makes me somewhat uncomfortable using this
-build script in production, since we&rsquo;re keeping GraalVM from catching any <em>real</em>
-mistakes you might make.</p>
+<p>It&rsquo;s straightforward enough except for the JVM arguments at the end. <code>--static</code>
+tells GraalVM to make a static binary including <code>glibc</code> and <code>zlib</code>.
+<code>-H:+ReportUnsupportedElementsAtRuntime</code> is a workaround for <a href="https://github.com/oracle/graal/issues/390" target="_blank">issue #390</a>.
+Unfortunately, this flag shifts a whole class of build errors to runtime,
+but it&rsquo;s unavoidable for now.</p>
 
-<p>You might be excited to compile your first Java native image now, but we&rsquo;re not
+<p>You might be excited to compile your first native Java binary, but we&rsquo;re not
 there yet! Unless you&rsquo;ve been experimenting with GraalVM already, you probably
 don&rsquo;t have it installed on your computer. Also, if you&rsquo;re on a Mac like
 me, the only available binary requires an Oracle Developer Network account.
 Instead, we&rsquo;ll do everything inside of Docker.</p>
 
 <p>Go ahead and download the GraalVM Linux binary from
-<a href="https://github.com/oracle/graal/releases/download/vm-1.0.0-rc1/graalvm-ce-1.0.0-rc1-linux-amd64.tar.gz" target="_blank">https://github.com/oracle/graal/releases/download/vm-1.0.0-rc1/graalvm-ce-1.0.0-rc1-linux-amd64.tar.gz</a>
+<a href="https://github.com/oracle/graal/releases/download/vm-1.0.0-rc2/graalvm-ce-1.0.0-rc2-linux-amd64.tar.gz" target="_blank">https://github.com/oracle/graal/releases/download/vm-1.0.0-rc2/graalvm-ce-1.0.0-rc2-linux-amd64.tar.gz</a>
 and put it in the root of your project. Then, copy this Dockerfile:
     <div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-docker" data-lang="docker"><span style="color:#66d9ef">FROM</span><span style="color:#e6db74"> ubuntu:18.04</span><span style="color:#960050;background-color:#1e0010">
 </span><span style="color:#960050;background-color:#1e0010"></span><span style="color:#66d9ef">RUN</span> apt-get update <span style="color:#f92672">&amp;&amp;</span> apt-get install -y gcc zlib1g-dev<span style="color:#960050;background-color:#1e0010">
-</span><span style="color:#960050;background-color:#1e0010"></span><span style="color:#66d9ef">ADD</span><span style="color:#e6db74"> graalvm-ce-1.0.0-rc1-linux-amd64.tar.gz /</span><span style="color:#960050;background-color:#1e0010">
-</span><span style="color:#960050;background-color:#1e0010"></span><span style="color:#66d9ef">ENV</span><span style="color:#e6db74"> PATH /graalvm-1.0.0-rc1/bin:/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin</span><span style="color:#960050;background-color:#1e0010">
+</span><span style="color:#960050;background-color:#1e0010"></span><span style="color:#66d9ef">ADD</span><span style="color:#e6db74"> graalvm-ce-1.0.0-rc2-linux-amd64.tar.gz /</span><span style="color:#960050;background-color:#1e0010">
+</span><span style="color:#960050;background-color:#1e0010"></span><span style="color:#66d9ef">ENV</span><span style="color:#e6db74"> PATH /graalvm-ce-1.0.0-rc2/bin:/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin</span><span style="color:#960050;background-color:#1e0010">
 </span><span style="color:#960050;background-color:#1e0010"></span><span style="color:#66d9ef">WORKDIR</span><span style="color:#e6db74"> /graalvm-demo</span><span style="color:#960050;background-color:#1e0010">
 </span><span style="color:#960050;background-color:#1e0010"></span>COPY . /graalvm-demo<span style="color:#960050;background-color:#1e0010">
 </span><span style="color:#960050;background-color:#1e0010"></span><span style="color:#66d9ef">RUN</span> ./gradlew nativeImage<span style="color:#960050;background-color:#1e0010">
@@ -344,55 +339,33 @@ and put it in the root of your project. Then, copy this Dockerfile:
 </span><span style="color:#960050;background-color:#1e0010"></span><span style="color:#66d9ef">EXPOSE</span><span style="color:#e6db74"> 4567</span><span style="color:#960050;background-color:#1e0010">
 </span><span style="color:#960050;background-color:#1e0010"></span><span style="color:#66d9ef">CMD</span><span style="color:#e6db74"> ./app</span></code></pre></div></p>
 
-<p>This <code>.dockerignore</code> might also be useful if you plan on experimenting on your
-own later:</p>
-
-<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-bash" data-lang="bash">.gradle
-Dockerfile
-build</code></pre></div>
-
-<p>Again, not too many tricks. The first block in the Dockerfile builds the native
-image using the Gradle task we set up earlier, and the second block copies
+<p>Again, not too many tricks. The first block in the Dockerfile builds a native
+binary using the Gradle task we set up earlier, and the second block copies
 it into a clean Docker image without the build tools. It&rsquo;s not especially fast,
 so get comfortable and run <code>docker build -t graalvm-demo .</code></p>
 
-<p>Once it finishes, we&rsquo;re all done! On my machine, the native image weighed in at
-16 MB and the whole Docker image is just 95 MB uncompressed. By comparison, the
-<code>openjdk</code> image is currently 625 MB <em>without any</em> application code.</p>
+<p>Once it finishes, we&rsquo;re all done! On my machine, the native binary weighed in at
+14 MB, and the whole Docker image is just 19 MB uncompressed. By comparison, the
+<code>openjdk</code> image is 450 MB <em>without any</em> application code.</p>
 
-<p>Run <code>docker run -p 4567:4567 graalvm-demo</code> to start the server, which runs without a
-JVM. If you open <a href="http://localhost:4567/hello" target="_blank">http://localhost:4567/hello</a> in a browser, you should see
-&ldquo;Hello World&rdquo;.</p>
+<p>Run <code>docker run -p 4567:4567 graalvm-demo</code> to start the server. If you open
+<a href="http://localhost:4567/hello" target="_blank">http://localhost:4567/hello</a> in a browser, you should see &ldquo;Hello World&rdquo;.</p>
 
 <h2 id="conclusions">Conclusions</h2>
 
-<p>I was surprised how easily I was able to integrate GraalVM and Gradle. The
-result is something you wouldn&rsquo;t be that crazy to start using for a work project.</p>
+<p>I&rsquo;m surprised how it is to integrate GraalVM and Gradle. The
+result is something you wouldn&rsquo;t be that crazy to start using for a serious
+project, as long as you&rsquo;re only targeting Linux.</p>
 
-<p>The biggest downside to GraalVM native images right now is that
+<p>The biggest downside to native binaries right now is that
 <a href="https://github.com/oracle/graal/blob/master/substratevm/REFLECTION.md" target="_blank">they don&rsquo;t support reflection well</a>.
-However, I&rsquo;m confident that support and tooling will improve, and
+However, I&rsquo;m confident that support and tooling will improve, and that
 eventually we&rsquo;ll even be able to use reflection-intensive web frameworks like
 Jersey and Spring.</p>
 
-<p>Native images could be a big feature for Java, putting it in
+<p>Native binaries could be a big feature for Java, putting it in direct
 competition with Golang. Java has been so successful on the server that it&rsquo;s
 exciting to imagine the possibilities for CLIs and smaller distributions.</p>
-
-<h2 id="next-steps">Next Steps</h2>
-
-<p>There are a couple of easy improvements to my approach if you do want
-to start using GraalVM native images right now.</p>
-
-<p>The first is to package the GraalVM distribution in a base Docker image so that you
-don&rsquo;t have the 200 MB tarball in every project you start. You could also try
-and get it to work with Alpine Linux instead of Ubuntu to shave another 50 MB
-off of the final Docker image size.</p>
-
-<p>Next is to rework the Gradle code into an easy-to-use plugin. Most of what I
-have above can be automatically added for the user without any configuration.
-<code>native-image</code> also has other flags that let you choose the name and location of the
-output binary.</p>
 
     </div>
     
@@ -410,7 +383,7 @@ output binary.</p>
   </time>
   
   
-  using <span itemprop="wordCount">938</span> words.
+  using <span itemprop="wordCount">731</span> words.
 </p>
 
       
