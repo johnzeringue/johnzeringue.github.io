@@ -4,9 +4,9 @@
     <meta name="generator" content="Hugo 0.40.3" />
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Small Static Java Web Servers with GraalVM and Gradle | John Zeringue</title>
-    <meta name="description" content="GraalVM is a new virtual machine from Oracle that supports several popular programming languages including JavaScript, Python, Ruby, and Java. One exciting feature of GraalVM is the ability to create native binaries from JVM binaries. These native binaries promise improved size, speed, startup time, and operational overhead compared to the typical Java runtime.
-In this blog post, I show how to create a native binary for a basic web server written using Spark, a popular Java microframework.">
+    <title>Java Web Server in a 20 MB Docker Image | John Zeringue</title>
+    <meta name="description" content="GraalVM is a new virtual machine from Oracle with a lot of cool features. One of the most exciting is the ability to create native Java binaries. These native binaries promise improved speed, size, startup time, and operational overhead compared to a typical JVM runtime.
+In this blog post, I show how to create a tiny Docker image with a simple web server by using native Java binaries. At the end, we&rsquo;ll have a nicely scripted build that you might consider using for serious projects.">
     <meta name="keywords" content="">
     
     
@@ -17,9 +17,9 @@ In this blog post, I show how to create a native binary for a basic web server w
   <meta name="author" content="">
 
 
-    <meta property="og:title" content="Small Static Java Web Servers with GraalVM and Gradle" />
-<meta property="og:description" content="GraalVM is a new virtual machine from Oracle that supports several popular programming languages including JavaScript, Python, Ruby, and Java. One exciting feature of GraalVM is the ability to create native binaries from JVM binaries. These native binaries promise improved size, speed, startup time, and operational overhead compared to the typical Java runtime.
-In this blog post, I show how to create a native binary for a basic web server written using Spark, a popular Java microframework." />
+    <meta property="og:title" content="Java Web Server in a 20 MB Docker Image" />
+<meta property="og:description" content="GraalVM is a new virtual machine from Oracle with a lot of cool features. One of the most exciting is the ability to create native Java binaries. These native binaries promise improved speed, size, startup time, and operational overhead compared to a typical JVM runtime.
+In this blog post, I show how to create a tiny Docker image with a simple web server by using native Java binaries. At the end, we&rsquo;ll have a nicely scripted build that you might consider using for serious projects." />
 <meta property="og:type" content="article" />
 <meta property="og:url" content="https://zeringue.io/post/graalvm-gradle-docker/" />
 
@@ -40,9 +40,9 @@ In this blog post, I show how to create a native binary for a basic web server w
 
 
     <meta name="twitter:card" content="summary"/>
-<meta name="twitter:title" content="Small Static Java Web Servers with GraalVM and Gradle"/>
-<meta name="twitter:description" content="GraalVM is a new virtual machine from Oracle that supports several popular programming languages including JavaScript, Python, Ruby, and Java. One exciting feature of GraalVM is the ability to create native binaries from JVM binaries. These native binaries promise improved size, speed, startup time, and operational overhead compared to the typical Java runtime.
-In this blog post, I show how to create a native binary for a basic web server written using Spark, a popular Java microframework."/>
+<meta name="twitter:title" content="Java Web Server in a 20 MB Docker Image"/>
+<meta name="twitter:description" content="GraalVM is a new virtual machine from Oracle with a lot of cool features. One of the most exciting is the ability to create native Java binaries. These native binaries promise improved speed, size, startup time, and operational overhead compared to a typical JVM runtime.
+In this blog post, I show how to create a tiny Docker image with a simple web server by using native Java binaries. At the end, we&rsquo;ll have a nicely scripted build that you might consider using for serious projects."/>
 
     
 
@@ -218,21 +218,21 @@ article header img {
     <main>
   <article itemscope itemtype="http://schema.org/BlogPosting">
     
-<meta itemprop="name" content="Small Static Java Web Servers with GraalVM and Gradle">
-<meta itemprop="description" content="GraalVM is a new virtual machine from Oracle that supports several popular programming languages including JavaScript, Python, Ruby, and Java. One exciting feature of GraalVM is the ability to create native binaries from JVM binaries. These native binaries promise improved size, speed, startup time, and operational overhead compared to the typical Java runtime.
-In this blog post, I show how to create a native binary for a basic web server written using Spark, a popular Java microframework.">
+<meta itemprop="name" content="Java Web Server in a 20 MB Docker Image">
+<meta itemprop="description" content="GraalVM is a new virtual machine from Oracle with a lot of cool features. One of the most exciting is the ability to create native Java binaries. These native binaries promise improved speed, size, startup time, and operational overhead compared to a typical JVM runtime.
+In this blog post, I show how to create a tiny Docker image with a simple web server by using native Java binaries. At the end, we&rsquo;ll have a nicely scripted build that you might consider using for serious projects.">
 
 
 <meta itemprop="datePublished" content="2018-06-04T20:11:50-04:00" />
 <meta itemprop="dateModified" content="2018-06-04T20:11:50-04:00" />
-<meta itemprop="wordCount" content="731">
+<meta itemprop="wordCount" content="722">
 
 
 
 <meta itemprop="keywords" content="" />
 
     <header>
-      <h1 itemprop="headline">Small Static Java Web Servers with GraalVM and Gradle</h1>
+      <h1 itemprop="headline">Java Web Server in a 20 MB Docker Image</h1>
       <p class="muted">
         <svg style="margin-bottom:-3px" class="i-clock" viewBox="0 0 32 32" width="16" height="16" fill="none" stroke="currentcolor" stroke-linecap="round" stroke-linejoin="round" stroke-width="6.25%">
   <circle cx="16" cy="16" r="14" />
@@ -255,22 +255,21 @@ In this blog post, I show how to create a native binary for a basic web server w
     <div itemprop="articleBody">
       
 
-<p><a href="https://www.graalvm.org/" target="_blank">GraalVM</a> is a new virtual machine from Oracle that supports several popular
-programming languages including JavaScript, Python, Ruby, and Java. One exciting
-feature of GraalVM is the ability to create native binaries from JVM binaries.
-These native binaries promise improved size, speed, startup time, and operational
-overhead compared to the typical Java runtime.</p>
+<p><a href="https://www.graalvm.org/" target="_blank">GraalVM</a> is a new virtual machine from Oracle with a lot of cool features. One
+of the most exciting is the ability to create native Java binaries.
+These native binaries promise improved speed, size, startup time, and operational
+overhead compared to a typical JVM runtime.</p>
 
-<p>In this blog post, I show how to create a native binary for a basic web server
-written using <a href="http://sparkjava.com/" target="_blank">Spark</a>, a popular Java microframework. At the end, we&rsquo;ll
-have a nicely scripted build that you <em>might</em> consider using for serious projects.</p>
+<p>In this blog post, I show how to create a tiny Docker image with a simple web server
+by using native Java binaries. At the end, we&rsquo;ll have a nicely scripted build that
+you <em>might</em> consider using for serious projects.</p>
 
 <p>After installing Gradle on your own, create a new directory, navigate to it from
 the command line, and run <code>gradle init --type java-application</code>, which will
-generate a project skeleton suitable for this example. Now you should be able to
-run <code>./gradlew run</code> and get a nice greeting back.</p>
+generate a project skeleton suitable for this example. Now you can
+run the application with <code>./gradlew run</code> and get a nice greeting back.</p>
 
-<p>Next we&rsquo;ll flesh out the web application. First, we&rsquo;ll need to add Spark to our
+<p>Next, we&rsquo;ll flesh out the web server. I chose <a href="http://sparkjava.com/" target="_blank">Spark</a>, so we need to add it to our
 project dependencies. Edit the dependencies block in your <code>build.gradle</code> file to look
 like this:
     <div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-groovy" data-lang="groovy">dependencies <span style="color:#f92672">{</span>
@@ -333,7 +332,7 @@ and put it in the root of your project. Then, copy this Dockerfile:
 </span><span style="color:#960050;background-color:#1e0010"></span>COPY . /graalvm-demo<span style="color:#960050;background-color:#1e0010">
 </span><span style="color:#960050;background-color:#1e0010"></span><span style="color:#66d9ef">RUN</span> ./gradlew nativeImage<span style="color:#960050;background-color:#1e0010">
 </span><span style="color:#960050;background-color:#1e0010">
-</span><span style="color:#960050;background-color:#1e0010"></span><span style="color:#66d9ef">FROM</span><span style="color:#e6db74"> ubuntu:18.04</span><span style="color:#960050;background-color:#1e0010">
+</span><span style="color:#960050;background-color:#1e0010"></span><span style="color:#66d9ef">FROM</span><span style="color:#e6db74"> alpine</span><span style="color:#960050;background-color:#1e0010">
 </span><span style="color:#960050;background-color:#1e0010"></span><span style="color:#66d9ef">WORKDIR</span><span style="color:#e6db74"> /graalvm-demo</span><span style="color:#960050;background-color:#1e0010">
 </span><span style="color:#960050;background-color:#1e0010"></span>COPY --from<span style="color:#f92672">=</span><span style="color:#ae81ff">0</span> /graalvm-demo/app .<span style="color:#960050;background-color:#1e0010">
 </span><span style="color:#960050;background-color:#1e0010"></span><span style="color:#66d9ef">EXPOSE</span><span style="color:#e6db74"> 4567</span><span style="color:#960050;background-color:#1e0010">
@@ -351,19 +350,19 @@ so get comfortable and run <code>docker build -t graalvm-demo .</code></p>
 <p>Run <code>docker run -p 4567:4567 graalvm-demo</code> to start the server. If you open
 <a href="http://localhost:4567/hello" target="_blank">http://localhost:4567/hello</a> in a browser, you should see &ldquo;Hello World&rdquo;.</p>
 
-<h2 id="conclusions">Conclusions</h2>
+<h2 id="takeaways">Takeaways</h2>
 
-<p>I&rsquo;m surprised how it is to integrate GraalVM and Gradle. The
-result is something you wouldn&rsquo;t be that crazy to start using for a serious
-project, as long as you&rsquo;re only targeting Linux.</p>
+<p>I&rsquo;m surprised how easy it is to integrate GraalVM and Gradle. As long as you&rsquo;re
+only targeting Docker/Linux, this is something Java developers should already
+consider using for projects.</p>
 
-<p>The biggest downside to native binaries right now is that
+<p>The biggest downside to the native binaries right now is that
 <a href="https://github.com/oracle/graal/blob/master/substratevm/REFLECTION.md" target="_blank">they don&rsquo;t support reflection well</a>.
 However, I&rsquo;m confident that support and tooling will improve, and that
 eventually we&rsquo;ll even be able to use reflection-intensive web frameworks like
 Jersey and Spring.</p>
 
-<p>Native binaries could be a big feature for Java, putting it in direct
+<p>Native binaries could be a huge feature for Java, putting it in direct
 competition with Golang. Java has been so successful on the server that it&rsquo;s
 exciting to imagine the possibilities for CLIs and smaller distributions.</p>
 
@@ -383,7 +382,7 @@ exciting to imagine the possibilities for CLIs and smaller distributions.</p>
   </time>
   
   
-  using <span itemprop="wordCount">731</span> words.
+  using <span itemprop="wordCount">722</span> words.
 </p>
 
       
